@@ -1,0 +1,328 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,600;1,600&display=swap');
+
+:root {
+  /* Minimal Light Theme */
+  --bg-color: #ffffff;
+  --text-primary: #111111;
+  --text-secondary: #666666;
+  --border-color: #eaeaea;
+  --accent-color: #000000;
+  --accent-text: #ffffff;
+  --hover-bg: #f9f9f9;
+}
+
+html.dark {
+  /* Minimal Dark Theme */
+  --bg-color: #0a0a0a;
+  --text-primary: #ededed;
+  --text-secondary: #888888;
+  --border-color: #333333;
+  --accent-color: #ffffff;
+  --accent-text: #000000;
+  --hover-bg: #1a1a1a;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  line-height: 1.6;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-container {
+  max-width: 800px; /* Narrower container for better readability */
+  margin: 0 auto;
+  padding: 40px 20px;
+  width: 100%;
+}
+
+/* Glassy Navigation */
+.top-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  margin-bottom: 50px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-color);
+  border-radius: 100px;
+  position: sticky;
+  top: 20px;
+  z-index: 100;
+}
+
+html.dark .top-header {
+  background: rgba(10, 10, 10, 0.7);
+}
+
+.navbar ul {
+  list-style: none;
+  display: flex;
+  gap: 25px;
+}
+
+.navbar a {
+  text-decoration: none;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.navbar a:hover {
+  color: var(--text-primary);
+}
+
+.theme-toggle {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.theme-toggle:hover {
+  background: var(--hover-bg);
+  border-color: var(--text-primary);
+}
+
+/* Minimal Layout Sections */
+.page {
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.header {
+  margin-bottom: 60px;
+}
+
+.header h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 3rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+
+.header h2 {
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+
+.about, .skills {
+  margin-bottom: 60px;
+}
+
+h2 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  letter-spacing: -0.02em;
+}
+
+p {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+}
+
+.skills ul {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.skills li {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  padding: 6px 14px;
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  background: var(--hover-bg);
+}
+
+/* Form Styles */
+.form-group {
+  margin-bottom: 25px;
+}
+
+.form-group label {
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+textarea, .search-input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+}
+
+textarea:focus, .search-input:focus {
+  outline: none;
+  border-color: var(--text-primary);
+}
+
+.tooltip-btn {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  width: 22px;
+  height: 22px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tooltip-btn:hover {
+  border-color: var(--text-primary);
+  color: var(--text-primary);
+}
+
+.tooltip {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+
+.live-preview {
+  padding: 24px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--hover-bg);
+}
+
+.live-preview h3 {
+  font-size: 1rem;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.char-count {
+  margin-top: 15px;
+  font-size: 0.85rem;
+}
+
+/* Projects Page */
+.search-input {
+  margin-bottom: 40px;
+}
+
+.repo-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.repo-item {
+  padding: 24px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: border-color 0.2s ease;
+}
+
+.repo-item:hover {
+  border-color: var(--text-secondary);
+}
+
+.repo-item h3 {
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.repo-item a {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  text-decoration: none;
+  font-weight: 500;
+  display: inline-block;
+  margin-top: auto;
+  border-bottom: 1px solid transparent;
+  align-self: flex-start;
+}
+
+.repo-item a:hover {
+  border-bottom: 1px solid var(--text-primary);
+}
+
+/* States */
+.spinner {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.error-message {
+  padding: 20px;
+  border: 1px solid #ff4444;
+  border-radius: 8px;
+  color: #ff4444;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.error-message button {
+  background: transparent;
+  color: #ff4444;
+  border: 1px solid #ff4444;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.error-message button:hover {
+  background: #ff4444;
+  color: var(--bg-color);
+}
+
+/* Footer */
+.footer {
+  margin-top: auto;
+  padding-top: 40px;
+  padding-bottom: 20px;
+  border-top: 1px solid var(--border-color);
+  text-align: center;
+}
+
+.footer p {
+  font-size: 0.85rem;
+}
