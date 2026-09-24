@@ -1,0 +1,231 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap');
+
+.landing-body {
+  font-family: 'Inter', sans-serif;
+  background-color: #faf9f6; /* Off-white/cream */
+  color: #1a1a1a;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.landing-container {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+/* Header */
+.landing-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 3rem;
+}
+
+.logo {
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.logo-icon {
+  width: 24px;
+  height: 24px;
+  background: #1a1a1a;
+  border-radius: 6px;
+  transform: rotate(45deg);
+}
+
+.nav-links {
+  display: flex;
+  gap: 2.5rem;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #555;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: color 0.2s;
+}
+
+.nav-links a:hover {
+  color: #1a1a1a;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.login-btn {
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-weight: 600;
+  color: #1a1a1a;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.get-started-btn {
+  background: #1a1a1a;
+  color: #fff;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 50px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.get-started-btn:hover {
+  background: #333;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  transform: translateY(-1px);
+}
+
+.get-started-btn.light {
+  background: #fff;
+  color: #1a1a1a;
+  border: 1px solid #eaeaea;
+}
+.get-started-btn.light:hover {
+  background: #f8f9fa;
+}
+
+/* Hero Section */
+.hero {
+  text-align: center;
+  padding: 6rem 2rem 1rem;
+}
+
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 4.5rem;
+  font-weight: 400;
+  margin: 0 0 1.5rem;
+  line-height: 1.1;
+  color: #111;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  color: #666;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.hero-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.hero-visual {
+  margin-top: 5rem;
+  height: 200px;
+  background: linear-gradient(to right, transparent, rgba(167, 139, 250, 0.1), rgba(94, 234, 212, 0.1), transparent);
+  border-radius: 50%;
+  filter: blur(40px);
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Features */
+.features {
+  padding: 2rem 4rem 4rem;
+  background: transparent;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2.5rem;
+  margin-top: 2rem;
+}
+
+.feature-card {
+  background: #fff;
+  border-radius: 24px;
+  padding: 1.5rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+  transition: all 0.4s ease;
+  cursor: pointer;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+}
+
+.feature-visual {
+  height: 220px;
+  border-radius: 16px;
+  margin-bottom: 2rem;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.feature-visual.plan { background: linear-gradient(135deg, #a78bfa 0%, #c4b5fd 100%); }
+.feature-visual.prioritize { background: linear-gradient(135deg, #6ee7b7 0%, #a7f3d0 100%); }
+.feature-visual.achieve { background: linear-gradient(135deg, #93c5fd 0%, #bfdbfe 100%); }
+
+.mock-ui-chip {
+  background: rgba(255,255,255,0.8);
+  backdrop-filter: blur(4px);
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #333;
+  position: absolute;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.feature-card h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  margin: 0 0 1rem;
+  text-align: center;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.feature-card p {
+  text-align: center;
+  color: #666;
+  line-height: 1.5;
+  margin: 0;
+  font-size: 0.95rem;
+  padding: 0 1rem;
+}
+
+/* CTA */
+.cta-section {
+  padding: 5rem 2rem 8rem;
+  text-align: center;
+  background: #faf9f6;
+  border-top: 1px solid rgba(0,0,0,0.03);
+}
+
+.get-started-btn.main-cta {
+  padding: 1rem 2.5rem;
+  font-size: 1.1rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+@media (max-width: 768px) {
+  .feature-grid { grid-template-columns: 1fr; flex-direction: column; }
+  .hero h1 { font-size: 3rem; }
+}
