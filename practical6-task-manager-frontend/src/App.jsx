@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { getTasks, createTask, updateTask, deleteTask, loginUser, registerUser, getMe } from './api';
-import LandingPage from './LandingPage';
-import './App.css';
+import { useState, useEffect } from 'react'
+import { getTasks, createTask, updateTask, deleteTask } from './api'
+import './App.css'
 
 // Toast Component
 const Toast = ({ message, type, onClose }) => {
   useEffect(() => {
-    const timer = setTimeout(onClose, 10000); // 10 seconds
+    const timer = setTimeout(onClose, 3000);
     return () => clearTimeout(timer);
   }, [onClose]);
 
@@ -18,198 +17,74 @@ const Toast = ({ message, type, onClose }) => {
 };
 
 function App() {
-  // --- PRACTICAL 7: Authentication State ---
-  const [token, setToken] = useState(localStorage.getItem('token') || null);
-  const [user, setUser] = useState(null);
-  
-  // Auth Form State (Practical 7 Login Page UI)
-  const [showAuthView, setShowAuthView] = useState(false);
-  const [authEmail, setAuthEmail] = useState('');
-  const [authPassword, setAuthPassword] = useState('');
-  const [isLoginView, setIsLoginView] = useState(true);
-  // --- END PRACTICAL 7 STATE ---
-
-  // Task State
   const [tasks, setTasks] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+  const [toast, setToast] = useState(null);
+
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [priority, setPriority] = useState('medium');
-  
-  const [toast, setToast] = useState(null);
 
   const showToast = (message, type = 'success') => {
     setToast({ message, type });
   };
 
-  // 1. Fetch user & tasks on auth
-  useEffect(() => {
-    if (token) {
-      loadUserData();
-    } else {
-      setTasks([]);
-      setUser(null);
-    }
-  }, [token]);
-
-  const handleAuthError = (err) => {
-    if (err.message === 'Unauthorized') {
-      handleLogout();
-      showToast('Session expired. Please log in again.', 'error');
-    } else {
-      let msg = err.message;
-      try { msg = JSON.parse(err.message).error || err.message; } catch(e){}
-      showToast(msg, 'error');
-    }
-  };
-
-  const loadUserData = async () => {
-    setLoading(true);
+  const fetchTasks = async () => {
     try {
-      const userData = await getMe();
-      setUser(userData);
-      
-      const tasksData = await getTasks();
-      setTasks(tasksData);
-      setError(null);
+      setLoading(true);
+      const data = await getTasks();
+      setTasks(data);
     } catch (err) {
-      handleAuthError(err);
+      setError('Failed to fetch tasks.');
     } finally {
       setLoading(false);
     }
   };
 
-  // 2. Authentication Handlers
-  const handleAuthSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      if (isLoginView) {
-        const data = await loginUser({ email: authEmail, password: authPassword });
-        localStorage.setItem('token', data.token);
-        setToken(data.token);
-        showToast('Logged in successfully!');
-      } else {
-        await registerUser({ email: authEmail, password: authPassword });
-        showToast('Registered successfully! Please log in.');
-        setIsLoginView(true);
-      }
-      setAuthEmail('');
-      setAuthPassword('');
-    } catch (err) {
-      let msg = err.message;
-      try { msg = JSON.parse(err.message).error || err.message; } catch(e){}
-      showToast(msg, 'error');
-    }
-  };
+  useEffect(() => {
+    fetchTasks();
+  }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    setToken(null);
-    setShowAuthView(false);
-    showToast('Logged out successfully');
-  };
-
-  // 3. Task Handlers
   const handleCreate = async (e) => {
     e.preventDefault();
     if (!title.trim()) return;
 
-    const newTaskData = { title, description, priority, completed: false };
-    
-    // OPTIMISTIC UI UPDATE
-    const tempId = Date.now().toString();
-    const optimisticTask = { ...newTaskData, _id: tempId };
-    setTasks(prev => [...prev, optimisticTask]);
-    
-    setTitle('');
-    setDescription('');
-    setPriority('medium');
-
     try {
-      const createdTask = await createTask(newTaskData);
-      setTasks(prev => prev.map(t => t._id === tempId ? createdTask : t));
-      showToast('Task created successfully!');
+      const newTask = await createTask({ title, description, priority, completed: false });
+      setTasks(prev => [...prev, newTask]);
+      setTitle('');
+      setDescription('');
+      setPriority('medium');
+      showToast('Task added successfully!');
     } catch (err) {
-      setTasks(prev => prev.filter(t => t._id !== tempId));
-      handleAuthError(err);
+      showToast('Failed to add task', 'error');
     }
   };
 
   const handleToggleComplete = async (task) => {
-    setTasks(prev => prev.map(t => t._id === task._id ? { ...t, completed: !t.completed } : t));
+    const updatedTask = { ...task, completed: !task.completed };
+    setTasks(prev => prev.map(t => t._id === task._id ? updatedTask : t));
     try {
-      await updateTask(task._id, { completed: !task.completed });
-      showToast('Task updated!');
+      await updateTask(task._id, updatedTask);
     } catch (err) {
-      setTasks(prev => prev.map(t => t._id === task._id ? { ...t, completed: task.completed } : t));
-      handleAuthError(err);
+      setTasks(prev => prev.map(t => t._id === task._id ? task : t));
+      showToast('Failed to update task', 'error');
     }
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this task?")) {
-      const taskToDelete = tasks.find(t => t._id === id);
-      setTasks(prev => prev.filter(t => t._id !== id));
-      try {
-        await deleteTask(id);
-        showToast('Task deleted successfully!');
-      } catch (err) {
-        setTasks(prev => [...prev, taskToDelete]);
-        handleAuthError(err);
-      }
+    const prevTasks = [...tasks];
+    setTasks(prev => prev.filter(t => t._id !== id));
+    try {
+      await deleteTask(id);
+      showToast('Task deleted successfully!');
+    } catch (err) {
+      setTasks(prevTasks);
+      showToast('Failed to delete task', 'error');
     }
   };
 
-  // --- PRACTICAL 7: RENDER LOGIN/REGISTRATION UI ---
-  if (!token) {
-    if (!showAuthView) {
-      return <LandingPage onLoginClick={() => setShowAuthView(true)} />;
-    }
-
-    return (
-      <div className="auth-overlay">
-        <div className="auth-container modern-auth">
-          <button className="back-btn" onClick={() => setShowAuthView(false)}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-            Back
-          </button>
-          
-          {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
-          
-          <div className="auth-header">
-          <h1>{isLoginView ? 'Welcome Back' : 'Create Account'}</h1>
-          <p>{isLoginView ? 'Sign in to access your tasks' : 'Sign up to get started'}</p>
-        </div>
-
-        <form onSubmit={handleAuthSubmit} className="auth-form">
-          <input 
-            type="email" 
-            placeholder="Email Address" 
-            value={authEmail} 
-            onChange={e => setAuthEmail(e.target.value)} 
-            required 
-          />
-          <input 
-            type="password" 
-            placeholder="Password" 
-            value={authPassword} 
-            onChange={e => setAuthPassword(e.target.value)} 
-            required 
-          />
-          <button type="submit">{isLoginView ? 'Sign In' : 'Sign Up'}</button>
-        </form>
-
-        <div className="auth-toggle" onClick={() => setIsLoginView(!isLoginView)}>
-          {isLoginView ? "Don't have an account? Register" : "Already have an account? Login"}
-        </div>
-        </div>
-      </div>
-    );
-  }
-
-  // --- RENDER MAIN APP VIEW ---
   return (
     <div className="container">
       {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
@@ -218,10 +93,6 @@ function App() {
         <div className="logo">
           <div className="logo-icon"></div>
           <h1>Task Manager</h1>
-        </div>
-        <div className="user-controls">
-          {user && <span className="user-email">Logged in as: {user.email}</span>}
-          <button onClick={handleLogout} className="logout-btn">Logout</button>
         </div>
       </header>
 
@@ -235,7 +106,7 @@ function App() {
         />
         <input 
           type="text" 
-          placeholder="Description" 
+          placeholder="Description (Optional)" 
           value={description} 
           onChange={e => setDescription(e.target.value)} 
         />
@@ -247,31 +118,36 @@ function App() {
         <button type="submit">Add Task</button>
       </form>
 
-      {loading ? (
-        <div className="loading">Loading tasks...</div>
-      ) : error ? (
-        <div className="error">{error}</div>
-      ) : (
-        <div className="task-list">
-          {tasks.length === 0 ? <p className="empty-state">No tasks found. Create one!</p> : null}
-          {tasks.map(task => (
-            <div key={task._id} className={`task-card priority-${task.priority} ${task.completed ? 'completed' : ''}`}>
-              <div className="task-info">
-                <h3>{task.title} <span className={`priority-badge ${task.priority}`}>{task.priority}</span></h3>
-                {task.description && <p>{task.description}</p>}
-              </div>
-              <div className="task-actions">
-                <button className="complete-btn" onClick={() => handleToggleComplete(task)}>
-                  {task.completed ? 'Undo' : 'Complete'}
-                </button>
-                <button className="delete-btn" onClick={() => handleDelete(task._id)}>Delete</button>
-              </div>
-            </div>
-          ))}
-        </div>
+      {loading && <div className="loading">Loading tasks...</div>}
+      {error && <div className="error">{error}</div>}
+      
+      {!loading && !error && tasks.length === 0 && (
+        <div className="empty-state">No tasks yet. Add one above!</div>
       )}
+
+      <div className="task-list">
+        {tasks.map(task => (
+          <div key={task._id} className={`task-card priority-${task.priority} ${task.completed ? 'completed' : ''}`}>
+            <div className="task-info">
+              <h3>
+                {task.title || "Untitled Task"}
+                <span className={`priority-badge ${task.priority}`}>{task.priority}</span>
+              </h3>
+              {task.description && <p>{task.description}</p>}
+            </div>
+            <div className="task-actions">
+              <button onClick={() => handleToggleComplete(task)} className="complete-btn">
+                {task.completed ? 'Undo' : 'Complete'}
+              </button>
+              <button onClick={() => handleDelete(task._id)} className="delete-btn">
+                Delete
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App

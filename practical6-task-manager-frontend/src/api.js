@@ -1,78 +1,35 @@
-const BASE_URL = 'http://localhost:5001';
+const BASE_URL = 'http://localhost:5000';
 
-// Get token from local storage
-const getToken = () => localStorage.getItem('token');
+export const getTasks = () => fetch(`${BASE_URL}/tasks`).then(async res => {
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+});
 
-// Helper to construct headers
-const getHeaders = () => {
-  const headers = { 'Content-Type': 'application/json' };
-  const token = getToken();
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
-  }
-  return headers;
-};
-
-// --- AUTHENTICATION API ---
-export const loginUser = (credentials) => fetch(`${BASE_URL}/login`, {
+export const createTask = (task) => fetch(`${BASE_URL}/tasks`, {
   method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify(credentials)
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(task)
 }).then(async res => {
   if (!res.ok) throw new Error(await res.text());
   return res.json();
 });
 
-export const registerUser = (userData) => fetch(`${BASE_URL}/register`, {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify(userData)
-}).then(async res => {
-  if (!res.ok) throw new Error(await res.text());
-  return res.json();
-});
-
-export const getMe = () => fetch(`${BASE_URL}/me`, {
-  headers: getHeaders()
-}).then(async res => {
-  if (!res.ok) throw new Error(await res.text());
-  return res.json();
-});
-
-// --- TASKS API ---
-export const getTasks = () => fetch(`${BASE_URL}/tasks`, {
-  headers: getHeaders()
-}).then(async res => {
-  if (res.status === 401) throw new Error('Unauthorized');
-  if (!res.ok) throw new Error(await res.text());
-  return res.json();
-});
-
-export const createTask = (taskData) => fetch(`${BASE_URL}/tasks`, {
-  method: 'POST',
-  headers: getHeaders(),
-  body: JSON.stringify(taskData)
-}).then(async res => {
-  if (res.status === 401) throw new Error('Unauthorized');
-  if (!res.ok) throw new Error(await res.text());
-  return res.json();
-});
-
-export const updateTask = (id, taskData) => fetch(`${BASE_URL}/tasks/${id}`, {
+export const updateTask = (id, task) => fetch(`${BASE_URL}/tasks/${id}`, {
   method: 'PUT',
-  headers: getHeaders(),
-  body: JSON.stringify(taskData)
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(task)
 }).then(async res => {
-  if (res.status === 401) throw new Error('Unauthorized');
   if (!res.ok) throw new Error(await res.text());
   return res.json();
 });
 
 export const deleteTask = (id) => fetch(`${BASE_URL}/tasks/${id}`, {
-  method: 'DELETE',
-  headers: getHeaders()
+  method: 'DELETE'
 }).then(async res => {
-  if (res.status === 401) throw new Error('Unauthorized');
   if (!res.ok) throw new Error(await res.text());
   return res.json();
 });
