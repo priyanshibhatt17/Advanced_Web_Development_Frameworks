@@ -6,6 +6,8 @@ import './App.css';
 // Lazy loaded components (Practical 8)
 const LandingPage = lazy(() => import('./LandingPage'));
 const Stats = lazy(() => import('./pages/Stats'));
+import DelayedFallback from './components/DelayedFallback';
+import TaskForm from './components/TaskForm';
 
 // Toast Component
 const Toast = ({ message, type, onClose }) => {
@@ -103,19 +105,13 @@ function App() {
     showToast('Logged out successfully');
   };
 
-  const handleCreate = async (e) => {
-    e.preventDefault();
-    if (!title.trim()) return;
-    const newTaskData = { title, description, priority, completed: false };
+  const handleCreate = async (taskData) => {
     const tempId = Date.now().toString();
-    const optimisticTask = { ...newTaskData, _id: tempId };
+    const optimisticTask = { ...taskData, _id: tempId, completed: false };
     setTasks(prev => [...prev, optimisticTask]);
-    setTitle('');
-    setDescription('');
-    setPriority('medium');
 
     try {
-      const createdTask = await createTask(newTaskData);
+      const createdTask = await createTask(optimisticTask);
       setTasks(prev => prev.map(t => t._id === tempId ? createdTask : t));
       showToast('Task created successfully!');
     } catch (err) {
@@ -185,16 +181,7 @@ function App() {
         </div>
       </header>
 
-      <form onSubmit={handleCreate} className="task-form">
-        <input type="text" placeholder="Task Title" value={title} onChange={e => setTitle(e.target.value)} required />
-        <input type="text" placeholder="Description" value={description} onChange={e => setDescription(e.target.value)} />
-        <select value={priority} onChange={e => setPriority(e.target.value)}>
-          <option value="low">Low Priority</option>
-          <option value="medium">Medium Priority</option>
-          <option value="high">High Priority</option>
-        </select>
-        <button type="submit">Add Task</button>
-      </form>
+      <TaskForm onTaskCreate={handleCreate} />
 
       {loading ? (
         <div className="loading">Loading tasks...</div>
@@ -228,11 +215,7 @@ function App() {
       {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
       
       {/* Fallback UI with a minimum delay to prevent flickering */}
-      <Suspense fallback={
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', fontFamily: 'Inter, sans-serif' }}>
-          <h2>Loading chunk... (Simulating Slow 3G)</h2>
-        </div>
-      }>
+      <Suspense fallback={<DelayedFallback />}>
         <Routes>
           <Route path="/" element={
             token ? <Navigate to="/dashboard" /> : (
