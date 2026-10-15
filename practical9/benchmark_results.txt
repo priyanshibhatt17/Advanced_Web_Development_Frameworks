@@ -1,0 +1,58 @@
+==================================================================
+         PRACTICAL 9: IN-MEMORY CACHING BENCHMARK SUITE          
+==================================================================
+
+1. Authenticating test user: student@test.com
+   -> Successfully obtained JWT Token!
+
+2. Measuring UNCACHED Readings (Direct Database Queries):
+   Sample 1 (Uncached): 45.19 ms | X-Cache: BYPASS | Status: 200
+   Sample 2 (Uncached): 10.95 ms | X-Cache: BYPASS | Status: 200
+   Sample 3 (Uncached): 36.53 ms | X-Cache: BYPASS | Status: 200
+
+3. Measuring CACHED Readings (node-cache In-Memory):
+   Initial Request (Cache MISS - fetched & cached): 29.82 ms | X-Cache: MISS
+   Sample 1 (Cache HIT):  14.76 ms | X-Cache: HIT | Status: 200
+   Sample 2 (Cache HIT):  14.45 ms | X-Cache: HIT | Status: 200
+   Sample 3 (Cache HIT):  12.22 ms | X-Cache: HIT | Status: 200
+
+==================================================================
+Average Uncached Response Time: 30.89 ms
+Average Cached Response Time:   13.81 ms
+Performance Improvement:        2.2x faster with in-memory caching!
+==================================================================
+
+4. Testing Cache Invalidation on Write (POST /tasks):
+   Created new task: New Task After Cache
+   Next GET /tasks immediately after write: 11.23 ms | X-Cache: MISS (Expected: MISS)
+   Subsequent GET /tasks: 5.29 ms | X-Cache: HIT (Expected: HIT)
+
+5. Supplementary Problem 1: Single-Task Caching (GET /tasks/:id):
+   GET /tasks/6ad0dcfac3dfd4075d5c18fc (Call 1): 38.00 ms | X-Cache: MISS
+   GET /tasks/6ad0dcfac3dfd4075d5c18fc (Call 2): 7.37 ms | X-Cache: HIT (Expected: HIT)
+
+6. Supplementary Problem 2: Debug Stats Endpoint (GET /cache-stats):
+{
+  "metrics": {
+    "cacheHits": 5,
+    "cacheMisses": 6,
+    "totalRequests": 11,
+    "hitRatio": "45.5%"
+  },
+  "activeKeys": [
+    "all_tasks",
+    "task_6ad0dcfac3dfd4075d5c18fc"
+  ],
+  "internalStats": {
+    "hits": 5,
+    "misses": 0,
+    "keys": 2,
+    "ksize": 38,
+    "vsize": 440
+  },
+  "defaultTTL": "60 seconds"
+}
+
+==================================================================
+           ALL BENCHMARKS AND VERIFICATIONS COMPLETED!            
+==================================================================

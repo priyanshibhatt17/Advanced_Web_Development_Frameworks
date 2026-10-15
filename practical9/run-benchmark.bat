@@ -12,11 +12,11 @@ if %errorlevel% neq 0 (
     echo [INFO] Backend is not running. Starting server on port 5001...
     cd /d "c:\Users\asd\Documents\Advanced Web Development Frameworks\practical9\backend"
     start /min "Practical 9 Backend" node server.js
-    echo [INFO] Waiting 3 seconds for server to initialize...
-    timeout /t 3 /nobreak >nul
+    echo [INFO] Waiting 5 seconds for server to initialize...
+    timeout /t 5 /nobreak >nul
     cd /d "c:\Users\asd\Documents\Advanced Web Development Frameworks\practical9"
 ) else (
-    echo [INFO] Backend is already running on port 5001.
+    echo [INFO] Backend is active and running on port 5001.
 )
 
 echo.
