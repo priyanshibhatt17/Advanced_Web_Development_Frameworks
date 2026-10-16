@@ -260,16 +260,19 @@ app.get('/tasks/:id', async (req, res, next) => {
 app.post('/tasks', async (req, res, next) => {
   const reqStart = Date.now();
   try {
+    const taskData = { ...req.body };
+    delete taskData._id;
+
     let newTask = null;
     if (isMongoConnected) {
-      newTask = await Task.create(req.body);
+      newTask = await Task.create(taskData);
     } else {
       newTask = {
         _id: 'task_' + Date.now(),
-        title: req.body.title,
-        description: req.body.description || '',
-        priority: req.body.priority || 'medium',
-        completed: req.body.completed || false,
+        title: taskData.title,
+        description: taskData.description || '',
+        priority: taskData.priority || 'medium',
+        completed: taskData.completed || false,
         createdAt: new Date()
       };
       memoryTasks.unshift(newTask);

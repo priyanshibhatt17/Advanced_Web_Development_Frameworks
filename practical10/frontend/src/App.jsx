@@ -111,7 +111,7 @@ function App() {
     setTasks(prev => [...prev, optimisticTask]);
 
     try {
-      const createdTask = await createTask(optimisticTask);
+      const createdTask = await createTask(taskData);
       setTasks(prev => prev.map(t => t._id === tempId ? createdTask : t));
       showToast('Task created successfully!');
     } catch (err) {

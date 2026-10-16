@@ -88,7 +88,7 @@ taskEmitter.on('task-deleted', async (data) => {
 taskEmitter.on('error', (err) => {
   const errorTime = new Date().toISOString();
   console.error(`----------------------------------------------------------------`);
-  console.error(`⚠️  [EVENT EMITTER ERROR HANDLER CAUGHT EXCEPTION]`);
+  console.error(`  [EVENT EMITTER ERROR HANDLER CAUGHT EXCEPTION]`);
   console.error(`   Error Message:     ${err.message}`);
   console.error(`   Timestamp:         ${errorTime}`);
   console.error(`   Safety Resolution: Handled safely in background; Server continues running!`);
