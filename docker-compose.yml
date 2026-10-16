@@ -1,0 +1,65 @@
+version: '3.8'
+
+# ====================================================================
+# Practical 11: Root Docker Compose Orchestrator
+# Command to run: docker-compose up --build
+# ====================================================================
+
+services:
+  # 1. MongoDB Database Container
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=taskmanager
+    volumes:
+      # Supplementary Problem 3: Named volume for persistent data storage
+      - mongo-data:/data/db
+    networks:
+      - app-network
+
+  # 2. Node.js / Express Backend Container
+  backend:
+    build:
+      context: ./practical11/backend
+      dockerfile: Dockerfile
+    container_name: task-backend
+    restart: unless-stopped
+    ports:
+      - "5001:5001"
+      - "5000:5001"
+    environment:
+      - PORT=5001
+      - MONGO_URI=mongodb://mongodb:27017/taskmanager
+      - JWT_SECRET=super_secret_docker_lab_key
+    depends_on:
+      - mongodb
+    networks:
+      - app-network
+
+  # 3. React Frontend Container (Multi-stage build)
+  frontend:
+    build:
+      context: ./practical11/frontend
+      dockerfile: Dockerfile
+    container_name: task-frontend
+    restart: unless-stopped
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    name: app-network
+    driver: bridge
+
+volumes:
+  mongo-data:
+    name: mongo-data
+    driver: local

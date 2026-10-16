@@ -1,0 +1,8 @@
+# Exclude dependencies and sensitive environment variables from build context
+node_modules
+npm-debug.log
+.env
+.git
+.gitignore
+Dockerfile
+.dockerignore

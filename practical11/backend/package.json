@@ -1,0 +1,27 @@
+{
+  "name": "practical10-asynchronous-events",
+  "version": "1.0.0",
+  "description": "Practical 10: Asynchronous Processing with Event-Driven Architecture using native Node.js EventEmitter",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test-events.js"
+  },
+  "keywords": [
+    "nodejs",
+    "event-emitter",
+    "asynchronous-processing",
+    "event-driven"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.9.4",
+    "node-cache": "^5.1.2"
+  }
+}
