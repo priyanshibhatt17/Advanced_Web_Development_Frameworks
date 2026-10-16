@@ -17,8 +17,8 @@ const JWT_SECRET = process.env.JWT_SECRET || 'super_secret_lab_key';
 app.use(cors());
 
 // 1. IN-MEMORY CACHE INITIALIZATION (PRACTICAL 9)
-// Standard TTL: 60 seconds, check period: 120 seconds
-const taskCache = new NodeCache({ stdTTL: 60, checkperiod: 120 });
+// Imported from shared module as requested in lab manual
+const taskCache = require('./cache');
 
 // Cache hit/miss counters (Supplementary Problem 2)
 let cacheHits = 0;

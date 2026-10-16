@@ -286,6 +286,7 @@ app.post('/tasks', async (req, res, next) => {
     const apiResponseDurationMs = Date.now() - reqStart;
 
     console.log(`\n================================================================`);
+    console.log(`[API] Response sent at ${apiRespondedAt}`);
     console.log(`🚀 [API RESPONSE SENT IMMEDIATELY]`);
     console.log(`   Route:             POST /tasks`);
     console.log(`   Task Created:      "${newTask.title}"`);
