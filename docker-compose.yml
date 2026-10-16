@@ -1,0 +1,84 @@
+version: '3.8'
+
+# ====================================================================
+# Practical 11: Containerization with Docker and Docker Compose
+# Architecture: Frontend (React) -> Backend (Express) -> MongoDB
+# Network: app-network (Bridge)
+# ====================================================================
+
+services:
+  # ------------------------------------------------------------------
+  # 1. DATABASE SERVICE: MongoDB
+  # ------------------------------------------------------------------
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=taskmanager
+    volumes:
+      # Supplementary Problem 3: Named volume for data persistence across restarts
+      - mongo-data:/data/db
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ------------------------------------------------------------------
+  # 2. BACKEND API SERVICE: Node.js / Express
+  # ------------------------------------------------------------------
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: task-backend
+    restart: unless-stopped
+    ports:
+      - "5001:5001"
+      - "5000:5001"
+    environment:
+      - PORT=5001
+      - MONGO_URI=mongodb://mongodb:27017/taskmanager
+      - JWT_SECRET=super_secret_docker_lab_key
+    depends_on:
+      mongodb:
+        condition: service_started
+    networks:
+      - app-network
+
+  # ------------------------------------------------------------------
+  # 3. FRONTEND SERVICE: React (Vite Multi-stage build)
+  # ------------------------------------------------------------------
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: task-frontend
+    restart: unless-stopped
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+# --------------------------------------------------------------------
+# NETWORKS: Bridge network for inter-container DNS and communication
+# --------------------------------------------------------------------
+networks:
+  app-network:
+    name: app-network
+    driver: bridge
+
+# --------------------------------------------------------------------
+# VOLUMES: Persistent storage for MongoDB (Supplementary Problem 3)
+# --------------------------------------------------------------------
+volumes:
+  mongo-data:
+    name: mongo-data
+    driver: local
