@@ -1,5 +1,3 @@
-version: '3.8'
-
 # ====================================================================
 # Practical 11: Containerization with Docker and Docker Compose
 # Architecture: Frontend (React) -> Backend (Express) -> MongoDB
@@ -15,7 +13,7 @@ services:
     container_name: mongodb
     restart: unless-stopped
     ports:
-      - "27017:27017"
+      - "27018:27017"
     environment:
       - MONGO_INITDB_DATABASE=taskmanager
     volumes:

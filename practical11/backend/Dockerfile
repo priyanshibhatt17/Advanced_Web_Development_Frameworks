@@ -3,8 +3,8 @@
 # Practical 11: Containerization
 # ==========================================
 
-# Use official Node.js 18 LTS alpine image for minimal footprint
-FROM node:18-alpine
+# Use official Node.js 22 LTS alpine image for minimal footprint
+FROM node:22-alpine
 
 # Set working directory inside container
 WORKDIR /app

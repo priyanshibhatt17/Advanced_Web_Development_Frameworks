@@ -6,7 +6,7 @@
 # ------------------------------------------
 # Stage 1: Build Stage
 # ------------------------------------------
-FROM node:18-alpine AS build
+FROM node:22-alpine AS build
 
 WORKDIR /app
 
@@ -26,13 +26,13 @@ RUN npm run build
 # Stage 2: Production Runtime Stage
 # (Supplementary Problem 2: Multi-Stage Build)
 # ------------------------------------------
-FROM node:18-alpine AS runner
+FROM node:22-alpine AS runner
 
 WORKDIR /app
 
-# Copy package definitions and install only preview runtime dependencies
+# Copy package definitions and install vite preview runner
 COPY package*.json ./
-RUN npm install --omit=dev
+RUN npm install vite
 
 # Copy compiled production bundle from build stage
 COPY --from=build /app/dist ./dist
